@@ -15,5 +15,8 @@ BaselineOfCompletionDatasetGenerator >> baseline: spec [
 	spec for: #common do: [
 			spec
 				baseline: 'ExtendedHeuristicCompletionBenchmarks'
-				with: [ spec repository: 'github://omarabedelkader/HeuristicCompletion-Benchmarks/repository' ].]
+				with: [ spec repository: 'github://omarabedelkader/HeuristicCompletion-Benchmarks/repository' ].
+
+			spec package: 'Completion-Dataset-Generator'.
+			spec package: 'Completion-Dataset-Generator-Tests' with: [ spec requires: #( 'Completion-Dataset-Generator' ) ] ]
 ]
