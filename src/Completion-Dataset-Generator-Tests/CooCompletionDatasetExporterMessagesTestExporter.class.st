@@ -3,7 +3,7 @@ context
 "
 Class {
 	#name : 'CooCompletionDatasetExporterMessagesTestExporter',
-	#superclass : 'CooCompletionDatasetExporterMessages',
+	#superclass : 'CooStaticBenchmarksMessage',
 	#category : 'Completion-Dataset-Generator-Tests',
 	#package : 'Completion-Dataset-Generator-Tests'
 }

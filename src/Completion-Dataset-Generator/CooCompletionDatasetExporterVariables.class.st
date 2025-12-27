@@ -4,14 +4,14 @@ Available contexts
 - #surroundingCompletion:	source up to the call site plus the requested prefix (completion_surrounding_ctx.json)
 "
 Class {
-	#name : 'CooCompletionDatasetExporterMessages',
+	#name : 'CooCompletionDatasetExporterVariables',
 	#superclass : 'CooCompletionDatasetExporter',
 	#category : 'Completion-Dataset-Generator',
 	#package : 'Completion-Dataset-Generator'
 }
 
 { #category : 'as yet unclassified' }
-CooCompletionDatasetExporterMessages class >> exportAllMessages [
+CooCompletionDatasetExporterVariables class >> exportAllVariables [
 
 	<script>
 	^ self
@@ -66,90 +66,83 @@ CooCompletionDatasetExporterMessages class >> exportAllMessages [
 			     'Moose-TestResources-Reference-PackageTwo' 'MooseIDE-ButterflyMap-Tests' 'MooseIDE-CoUsageMap-Tests'
 			     'MooseIDE-CriticBrowser-Tests' 'MooseIDE-NewTools-Tests' 'MooseIDE-QueriesBrowser-Tests' 'MooseIDE-Spotter-Tests'
 			     'MooseIDE-Tagging-Tests' 'MooseIDE-Tests' )
-		  heuristics: [ :builder | builder messageHeuristic ]
+		  heuristics: [ :builder | builder variablesHeuristic ]
 		  context: #completion
-		  to: 'completion-ctx-messages.json'
+		  to: 'completion-ctx-variables.json'
 ]
 
 { #category : 'benchmarking' }
-CooCompletionDatasetExporterMessages >> benchCallsite: aMessageNode inMethod: aMethod atPosition: aPosition [
+CooCompletionDatasetExporterVariables >> benchCallsite: aVariableNode inMethod: aMethod atPosition: aPosition [
 
-	| originalSelector position |
-	originalSelector := aMessageNode selector.
+	| originalName position |
+	originalName := aVariableNode name.
 	position := (aPosition respondsTo: #first)
 		            ifTrue: [ aPosition first ]
 		            ifFalse: [ aPosition ].
 
-	2 to: (self maxPrefixSizeFor: originalSelector) do: [ :index |
+	2 to: (self maxPrefixSizeFor: aVariableNode) do: [ :index |
 		| prefix completion candidates context |
-		prefix := self extractPrefixFrom: originalSelector at: index.
-		aMessageNode selector: prefix.
+		prefix := self extractPrefixFrom: originalName at: index.
+		aVariableNode name: prefix.
 
-		completion := self buildCompletionFor: aMessageNode atPosition: position.
+		completion := self buildCompletionFor: aVariableNode atPosition: position.
 
 		candidates := self fetchTopCandidatesFrom: completion usingPrefix: prefix.
 
 		context := self
-			           contextFor: aMessageNode
+			           contextFor: aVariableNode
 			           inMethod: aMethod
 			           atPosition: position
 			           withPrefix: prefix.
 
-		self recordContext: context candidates: candidates correct: originalSelector ].
+		self recordContext: context candidates: candidates correct: originalName ].
 
-	aMessageNode selector: originalSelector
+	aVariableNode name: originalName
 ]
 
 { #category : 'benchmarks' }
-CooCompletionDatasetExporterMessages >> buildCompletionFor: aMessageNode atPosition: aPosition [
+CooCompletionDatasetExporterVariables >> buildCompletionFor: aVariableNode atPosition: aPosition [
 
 	^ builder
-		  node: aMessageNode;
-		  completionContext: (CoBenchmarkContext new
-				   callsite: aMessageNode;
+		  node: aVariableNode;
+		  completionContext: (CoBenchmarkVariableContext new
+				   callsite: aVariableNode;
 				   position: aPosition;
 				   yourself);
 		  buildCompletion
 ]
 
 { #category : 'benchmarking' }
-CooCompletionDatasetExporterMessages >> completionContextFor: aMessageNode withPrefix: prefix [
+CooCompletionDatasetExporterVariables >> completionContextFor: aVariableNode withPrefix: prefix [
 
-	| receiver source |
-	receiver := aMessageNode receiver.
-	source := aMessageNode methodNode source.
-
-	receiver ifNil: [ ^ prefix ].
-
-	^ (self sourceForNode: receiver inMethodSource: source) trimBoth , ' '
-	  , prefix
+	^ prefix
 ]
 
 { #category : 'benchmarks' }
-CooCompletionDatasetExporterMessages >> contextFor: aMessageNode inMethod: aMethod atPosition: aPosition withPrefix: prefix [
+CooCompletionDatasetExporterVariables >> contextFor: aVariableNode inMethod: aMethod atPosition: aPosition withPrefix: prefix [
 
 	^ self contextStrategy
 		  caseOf: {
 			  ([ #completion ] -> [
-				   self completionContextFor: aMessageNode withPrefix: prefix ]).
+				   self completionContextFor: aVariableNode withPrefix: prefix ]).
 			  ([ #surroundingCompletion ] -> [
-				   self surroundingCompletionContextFor: aMessageNode
+				   self surroundingCompletionContextFor: aVariableNode
 					   atPosition: aPosition
 					   withPrefix: prefix ]) }
 		  otherwise: [
-			  self surroundingCompletionContextFor: aMessageNode
+			  self surroundingCompletionContextFor: aVariableNode
 				  atPosition: aPosition
 				  withPrefix: prefix ]
 ]
 
 { #category : 'benchmarks' }
-CooCompletionDatasetExporterMessages >> extractPrefixFrom: selector at: index [
+CooCompletionDatasetExporterVariables >> extractPrefixFrom: variable at: index [
 
-	^ selector copyFrom: 1 to: index
+	^ variable copyFrom: 1 to: index
 ]
 
 { #category : 'benchmarks' }
-CooCompletionDatasetExporterMessages >> fetchTopCandidatesFrom: completion usingPrefix: prefix [
+CooCompletionDatasetExporterVariables >> fetchTopCandidatesFrom: completion usingPrefix: prefix [
 
 	completion replaceFilterWith:
 		(CoCaseSensitiveBeginsWithFilter filterString: prefix).
@@ -157,19 +150,19 @@ CooCompletionDatasetExporterMessages >> fetchTopCandidatesFrom: completion using
 ]
 
 { #category : 'benchmarks' }
-CooCompletionDatasetExporterMessages >> maxPrefixSizeFor: selector [
+CooCompletionDatasetExporterVariables >> maxPrefixSizeFor: aVariableNode [
 
-	^ selector size min: 8
+	^ aVariableNode name size min: 8
 ]
 
 { #category : 'running' }
-CooCompletionDatasetExporterMessages >> run [
+CooCompletionDatasetExporterVariables >> run [
 
 	scope methodsDo: [ :method |
 		method parseTree nodesDo: [ :node |
-			node isMessage ifTrue: [
+			(node isVariable and: [ node name first isUppercase ]) ifTrue: [
 				self
 					benchCallsite: node
 					inMethod: method
-					atPosition: node keywordsIntervals first ] ] ]
+					atPosition: node start ] ] ]
 ]
