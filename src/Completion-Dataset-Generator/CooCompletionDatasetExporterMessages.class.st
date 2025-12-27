@@ -71,6 +71,17 @@ CooCompletionDatasetExporterMessages class >> exportAllMessages [
 		  to: 'completion-ctx-messages.json'
 ]
 
+{ #category : 'as yet unclassified' }
+CooCompletionDatasetExporterMessages class >> exportnec [
+
+	<script>
+	^ self
+		  exportOnPackages: #( 'NECompletion' )
+		  heuristics: [ :builder | builder messageHeuristic ]
+		  context: #lineCompletion
+		  to: 'completion-ctx-line-messages.json'
+]
+
 { #category : 'benchmarking' }
 CooCompletionDatasetExporterMessages >> benchCallsite: aMessageNode inMethod: aMethod atPosition: aPosition [
 

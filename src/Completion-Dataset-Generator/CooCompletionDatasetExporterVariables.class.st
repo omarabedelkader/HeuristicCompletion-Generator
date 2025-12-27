@@ -2,6 +2,7 @@
 Available contexts
 - #completion:           	receiver expression and the requested prefix (completion_ctx.json)
 - #surroundingCompletion:	source up to the call site plus the requested prefix (completion_surrounding_ctx.json)
+- #lineCompletion:      	source line up to the call site plus the requested prefix
 "
 Class {
 	#name : 'CooCompletionDatasetExporterVariables',
@@ -71,6 +72,17 @@ CooCompletionDatasetExporterVariables class >> exportAllVariables [
 		  to: 'completion-ctx-variables.json'
 ]
 
+{ #category : 'as yet unclassified' }
+CooCompletionDatasetExporterVariables class >> exportnec [
+
+	<script>
+	^ self
+		  exportOnPackages: #( 'NECompletion' )
+		  heuristics: [ :builder | builder variablesHeuristic ]
+		  context: #lineCompletion
+		  to: 'completion-ctx-line-variables.json'
+]
+
 { #category : 'benchmarking' }
 CooCompletionDatasetExporterVariables >> benchCallsite: aVariableNode inMethod: aMethod atPosition: aPosition [
 
@@ -123,16 +135,14 @@ CooCompletionDatasetExporterVariables >> contextFor: aVariableNode inMethod: aMe
 
 	^ self contextStrategy
 		  caseOf: {
-			  ([ #completion ] -> [
-				   self completionContextFor: aVariableNode withPrefix: prefix ]).
-			  ([ #surroundingCompletion ] -> [
-				   self surroundingCompletionContextFor: aVariableNode
+				  ([ #completion ] -> [ self completionContextFor: aVariableNode withPrefix: prefix ]).
+([ #lineCompletion ] -> [
+				   self lineCompletionContextFor: aVariableNode
 					   atPosition: aPosition
-					   withPrefix: prefix ]) }
-		  otherwise: [
-			  self surroundingCompletionContextFor: aVariableNode
-				  atPosition: aPosition
-				  withPrefix: prefix ]
+					   withPrefix: prefix ]).
+				  ([ #surroundingCompletion ]
+				   -> [ self surroundingCompletionContextFor: aVariableNode atPosition: aPosition withPrefix: prefix ]) }
+		  otherwise: [ self surroundingCompletionContextFor: aVariableNode atPosition: aPosition withPrefix: prefix ]
 ]
 
 { #category : 'benchmarks' }

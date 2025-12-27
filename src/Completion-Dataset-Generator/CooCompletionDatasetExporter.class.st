@@ -93,6 +93,47 @@ CooCompletionDatasetExporter >> initialize [
 	entries := OrderedCollection new
 ]
 
+{ #category : 'as yet unclassified' }
+CooCompletionDatasetExporter >> lineCompletionContextFor: aNode atPosition: aPosition withPrefix: prefix [
+	| source position endIndex lastLf lastCr lineStart linePrefix |
+
+	source := aNode methodNode source.
+
+	position := (aPosition respondsTo: #first)
+		ifTrue: [ aPosition first ]
+		ifFalse: [ aPosition ].
+
+	position := position max: 1.
+	position := position min: source size + 1.
+	endIndex := position - 1.
+
+	lastLf := endIndex < 1
+		ifTrue: [ 0 ]
+		ifFalse: [
+			source
+				lastIndexOf: Character lf
+				startingAt: endIndex
+				ifAbsent: [ 0 ] ].
+
+	lastCr := endIndex < 1
+		ifTrue: [ 0 ]
+		ifFalse: [
+			source
+				lastIndexOf: Character cr
+				startingAt: endIndex
+				ifAbsent: [ 0 ] ].
+
+	lineStart := (lastLf max: lastCr) + 1.
+	lineStart := lineStart max: 1.
+
+	linePrefix := endIndex < lineStart
+		ifTrue: [ '' ]
+		ifFalse: [ source copyFrom: lineStart to: endIndex ].
+
+	^ linePrefix , prefix
+
+]
+
 { #category : 'accessing' }
 CooCompletionDatasetExporter >> recordContext: context candidates: candidates correct: originalValue [
 
