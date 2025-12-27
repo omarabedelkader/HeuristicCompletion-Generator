@@ -55,7 +55,7 @@ CooCompletionDatasetExporterMessagesTest >> testExportOnPackagesWithDifferentCon
 CooCompletionDatasetExporterMessagesTest >> testExportOnPackagesWritesFile [
 
 	CooCompletionDatasetExporterMessages
-		exportOnPackages: #( 'AI-Sorter-Exporter' )
+		exportOnPackages: #( 'Completion-Dataset-Generator' )
 		heuristics: [ :builder | builder messageHeuristic ]
 		context: #none
 		to: noneContextFile fullName.
