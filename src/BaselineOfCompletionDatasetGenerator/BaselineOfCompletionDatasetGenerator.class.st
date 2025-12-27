@@ -7,8 +7,11 @@ Class {
 
 { #category : 'baselines' }
 BaselineOfCompletionDatasetGenerator >> baseline: spec [
+
 	<baseline>
 	spec for: #common do: [
+					spec baseline: 'NeoJSON' with: [ spec repository: 'github://svenvc/NeoJSON/repository' ].
+
 			spec
 				baseline: 'ExtendedHeuristicCompletionBenchmarks'
 				with: [ spec repository: 'github://omarabedelkader/HeuristicCompletion-Benchmarks/repository' ].

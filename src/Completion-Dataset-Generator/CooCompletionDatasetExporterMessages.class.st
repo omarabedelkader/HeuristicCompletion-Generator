@@ -5,16 +5,14 @@ To begin you can execute this:
 CooCompletionDatasetExporterMessages
     exportOnPackages: #( 'Completion-Dataset-Generator' )
     heuristics: [ :builder | builder messageHeuristic ]
-	 context: #none
+	 context: #completion
     to: 'completion-dataset.json'.
 ```
 
 
 Available contexts
-- #none:                 	no surrounding information, emits context {}
 - #completion:           	receiver expression and the requested prefix
 - #surroundingCompletion:	source up to the call site plus the requested prefix (default fallback)
-- #method:               	full method source
 
 
 "
