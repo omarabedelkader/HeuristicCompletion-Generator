@@ -1,8 +1,8 @@
 "
 Available contexts
-- #completion:           	receiver expression and the requested prefix (completion_ctx.json)
-- #surroundingCompletion:	source up to the call site plus the requested prefix (completion_surrounding_ctx.json)
-- #lineCompletion:      	source line up to the call site plus the requested prefix
+- #completion:           	receiver expression and the requested prefix (completion-ctx-variables.json)
+- #surroundingCompletion:	source up to the call site plus the requested prefix (completion-surrounding-ctx-variables.json)
+- #lineCompletion:      	source line up to the call site plus the requested prefix (completion-surrounding-line-ctx-variables.json)
 "
 Class {
 	#name : 'CooCompletionDatasetExporterVariables',

@@ -1,7 +1,8 @@
 "
 Available contexts
-- #completion:           	receiver expression and the requested prefix (completion_ctx.json)
-- #surroundingCompletion:	source up to the call site plus the requested prefix (completion_surrounding_ctx.json)
+- #completion:           	receiver expression and the requested prefix (completion-ctx-messages.json)
+- #surroundingCompletion:	source up to the call site plus the requested prefix (completion-surrounding-ctx-messages.json)
+	- #lineCompletion:      	source line up to the call site plus the requested prefix (completion-surrounding-line-ctx-messages.json)
 "
 Class {
 	#name : 'CooCompletionDatasetExporterMessages',
@@ -141,16 +142,14 @@ CooCompletionDatasetExporterMessages >> contextFor: aMessageNode inMethod: aMeth
 
 	^ self contextStrategy
 		  caseOf: {
-			  ([ #completion ] -> [
-				   self completionContextFor: aMessageNode withPrefix: prefix ]).
-			  ([ #surroundingCompletion ] -> [
-				   self surroundingCompletionContextFor: aMessageNode
+				  ([ #completion ] -> [ self completionContextFor: aMessageNode withPrefix: prefix ]).
+				([ #lineCompletion ] -> [
+				   self lineCompletionContextFor: aMessageNode
 					   atPosition: aPosition
-					   withPrefix: prefix ]) }
-		  otherwise: [
-			  self surroundingCompletionContextFor: aMessageNode
-				  atPosition: aPosition
-				  withPrefix: prefix ]
+					   withPrefix: prefix ]).
+				  ([ #surroundingCompletion ]
+				   -> [ self surroundingCompletionContextFor: aMessageNode atPosition: aPosition withPrefix: prefix ]) }
+		  otherwise: [ self surroundingCompletionContextFor: aMessageNode atPosition: aPosition withPrefix: prefix ]
 ]
 
 { #category : 'benchmarks' }
