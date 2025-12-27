@@ -1,3 +1,11 @@
+"
+I manage dataset export runs for code completion benchmarks.
+
+	Subclasses define how to build completion contexts and candidates for a
+	specific callsite type (e.g. messages or variables). Instances collect
+	entries with the completion context, candidate list, and correct answer,
+	then serialize the results to JSON for storage on disk
+"
 Class {
 	#name : 'CooCompletionDatasetExporter',
 	#superclass : 'CooStaticBenchmarks',
