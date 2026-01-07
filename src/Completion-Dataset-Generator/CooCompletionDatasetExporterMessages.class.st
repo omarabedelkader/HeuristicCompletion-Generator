@@ -78,7 +78,7 @@ CooCompletionDatasetExporterMessages class >> exportnec [
 	<script>
 	^ self
 		  exportOnPackages: #( 'NECompletion' )
-		  heuristics: [ :builder | builder messageHeuristic ]
+		  heuristics: [ :builder | builder messagesHeuristic ]
 		  context: #lineCompletion
 		  to: 'completion-ctx-line-messages.json'
 ]

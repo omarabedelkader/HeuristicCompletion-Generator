@@ -82,6 +82,7 @@ CooCompletionDatasetExporter >> entriesAsJsonString [
 		   Dictionary new
 			   at: 'context' put: (entry at: #context);
 			   at: 'candidates' put: (entry at: #candidates);
+			at: 'fetchers' put: (entry at: #fetchers);
 			   at: 'correct' put: (entry at: #correct);
 			   yourself ])
 ]
@@ -121,11 +122,28 @@ CooCompletionDatasetExporter >> lineCompletionContextFor: aNode atPosition: aPos
 ]
 
 { #category : 'accessing' }
+CooCompletionDatasetExporter >> recordCandidateInfoFor: aCandidate [
+
+	| fetcherName fetcher |
+	fetcherName := ''.
+	(aCandidate respondsTo: #fetcher) ifTrue: [
+		fetcher := aCandidate fetcher.
+		fetcherName := (fetcher respondsTo: #name)
+			               ifTrue: [ fetcher name ]
+			               ifFalse: [ fetcher printString ] ].
+	(aCandidate respondsTo: #fetcherName) ifTrue: [
+		fetcherName := aCandidate fetcherName ].
+
+	^ fetcherName
+]
+
+{ #category : 'accessing' }
 CooCompletionDatasetExporter >> recordContext: context candidates: candidates correct: originalValue [
 
 	entries add: (Dictionary new
 			 at: #context put: context;
 			 at: #candidates put: (candidates collect: [ :each | each contents ]);
+			at: #fetchers put: (candidates collect: [ :each | self recordCandidateInfoFor: each ]);
 			 at: #correct put: originalValue;
 			 yourself)
 ]

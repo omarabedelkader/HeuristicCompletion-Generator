@@ -5,7 +5,8 @@ Class {
 	#name : 'CooCompletionDatasetExporterTestCandidate',
 	#superclass : 'Object',
 	#instVars : [
-		'contents'
+		'contents',
+		'fetcherName'
 	],
 	#category : 'Completion-Dataset-Generator-Tests',
 	#package : 'Completion-Dataset-Generator-Tests'
@@ -19,6 +20,15 @@ CooCompletionDatasetExporterTestCandidate class >> withContents: aString [
 		  yourself
 ]
 
+{ #category : 'as yet unclassified' }
+CooCompletionDatasetExporterTestCandidate class >> withContents: aString fetcherName: aFetcherName [
+
+	^ self new
+		  contents: aString;
+		  fetcherName: aFetcherName;
+		  yourself
+]
+
 { #category : 'accessing' }
 CooCompletionDatasetExporterTestCandidate >> contents [
 
@@ -29,4 +39,16 @@ CooCompletionDatasetExporterTestCandidate >> contents [
 CooCompletionDatasetExporterTestCandidate >> contents: aString [
 
 	contents := aString
+]
+
+{ #category : 'accessing' }
+CooCompletionDatasetExporterTestCandidate >> fetcherName [
+
+	^ fetcherName
+]
+
+{ #category : 'accessing' }
+CooCompletionDatasetExporterTestCandidate >> fetcherName: aString [
+
+	fetcherName := aString
 ]

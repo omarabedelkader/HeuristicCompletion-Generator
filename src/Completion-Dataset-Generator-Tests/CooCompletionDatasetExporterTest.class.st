@@ -13,8 +13,8 @@ CooCompletionDatasetExporterTest >> testEntriesAsJsonStringSerializesEntries [
 	exporter
 		recordContext: 'ctx'
 		candidates: {
-			CooCompletionDatasetExporterTestCandidate withContents: 'alpha'.
-			CooCompletionDatasetExporterTestCandidate withContents: 'beta' }
+				(CooCompletionDatasetExporterTestCandidate withContents: 'alpha' fetcherName: 'lexical').
+				(CooCompletionDatasetExporterTestCandidate withContents: 'beta' fetcherName: 'type') }
 		correct: 'answer'.
 
 	json := exporter entriesAsJsonString.
@@ -24,7 +24,8 @@ CooCompletionDatasetExporterTest >> testEntriesAsJsonStringSerializesEntries [
 	entry := data first.
 	self assert: (entry at: 'context') equals: 'ctx'.
 	self assert: (entry at: 'correct') equals: 'answer'.
-	self assert: (entry at: 'candidates') asArray equals: #( 'alpha' 'beta' )
+	self assert: (entry at: 'candidates') asArray equals: #( 'alpha' 'beta' ).
+	self assert: (entry at: 'fetchers') asArray equals: #( 'lexical' 'type' )
 ]
 
 { #category : 'tests' }
